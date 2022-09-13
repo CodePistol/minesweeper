@@ -1,11 +1,14 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
+import Layout from "../layout";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component }: AppProps) {
   return (
     <ChakraProvider>
-      <Component {...pageProps} />;
+      <Layout>
+        <Component />
+      </Layout>
     </ChakraProvider>
   );
 }
