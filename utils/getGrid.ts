@@ -1,11 +1,14 @@
+import { ICell, IMineParams } from "../features/mine/interface";
+import { dirs } from "./constants";
+
 export interface getGridProps {
   height: number;
   width: number;
   numberOfBombs: number;
 }
 
-export const getGrid = ({ height, width, numberOfBombs }: getGridProps) => {
-  if (height * width <= numberOfBombs) {
+export const makeGrid = ({ height, width, numOfBombs }: IMineParams) => {
+  if (height * width <= numOfBombs) {
     return null;
   }
   const grid = [];
@@ -16,33 +19,29 @@ export const getGrid = ({ height, width, numberOfBombs }: getGridProps) => {
     const j = Math.floor(Math.random() * (i + 1));
     [grid[i], grid[j]] = [grid[j], grid[i]];
   }
-  const result: number[][] = [[]];
+  const result: ICell[][] = [[]];
   for (var i = 0; i < height * width; i++) {
     if (Math.floor(i / width) >= result.length) {
       result.push([]);
     }
-    result[Math.floor(i / width)].push(0);
+    result[Math.floor(i / width)].push({
+      value: 0,
+      isMasked: true,
+      r: i,
+      c: Math.floor(i / width),
+    });
   }
-  for (var i = 0; i < numberOfBombs; i++) {
-    result[Math.floor(grid[i] / width)][grid[i] % width] = -1;
+  for (var i = 0; i < numOfBombs; i++) {
+    result[Math.floor(grid[i] / width)][grid[i] % width].value = -1;
   }
 
   //At this point we have an array of 0 and 1 valules
   //with 1 denoting the presence of a bomb. Now, let's
   // populate the grid with 1, 2, 3, 4...
-  const dirs = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
-    [-1, 0],
-  ];
+
   for (var i = 0; i < height; i++) {
     for (var j = 0; j < width; j++) {
-      if (result[i][j] == -1) {
+      if (result[i][j].value == -1) {
         dirs.forEach(([a, b]) => {
           const r = i + a;
           const c = j + b;
@@ -51,14 +50,13 @@ export const getGrid = ({ height, width, numberOfBombs }: getGridProps) => {
             r < height &&
             c >= 0 &&
             c < width &&
-            result[r][c] != -1
+            result[r][c].value != -1
           ) {
-            result[r][c] += 1;
+            result[r][c].value += 1;
           }
         });
       }
     }
   }
-
   return result;
 };

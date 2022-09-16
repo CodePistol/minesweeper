@@ -8,15 +8,11 @@ const GameGrid: React.FC = () => {
   return (
     grid && (
       <Flex justifyContent="center" direction="column">
-        {grid.map((row) => {
+        {grid.map((row, r) => {
           return (
             <Flex direction="row">
-              {row.map((cell) => (
-                <Cell
-                  value={cell.value}
-                  isMasked={cell.isMasked}
-                  isBomb={false}
-                />
+              {row.map((cell, c) => (
+                <Cell value={cell.value} isMasked={cell.isMasked} r={r} c={c} />
               ))}
             </Flex>
           );
