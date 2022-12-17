@@ -1,6 +1,7 @@
 export interface ICell {
   value: number;
   isMasked: boolean;
+  isFlagged: boolean;
   r: number;
   c: number;
 }
@@ -12,12 +13,13 @@ export interface IMineParams {
 }
 
 export interface IMineState {
-  grid: ICell[][] | null;
-  height: number | null;
-  width: number | null;
-  numOfBombs: number | null;
+  grid: ICell[][];
+  height: number;
+  width: number;
+  numOfBombs: number;
   gameOver: boolean;
-  unmaskedArray: boolean[][] | null;
+  unmaskedArray: boolean[][];
+  numberOfFlags: number;
 }
 
 export interface ISetupMine {
