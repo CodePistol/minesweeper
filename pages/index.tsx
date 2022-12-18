@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import GameGrid from "../components/GameGrid";
 import {
   flagCell,
@@ -71,22 +71,33 @@ const Home: NextPage = () => {
     );
   };
 
+  const gotoRules = () => {
+    // push("/rules");
+  };
+
   return (
     <Flex alignItems="center" direction="column">
       <Text textStyle="p1" color="black.400">
         Hello Minesweeper!
       </Text>
-      <Button onClick={setupMineFunc}>
-        {mine.gameOver
-          ? "Well played! Click to reset mine"
-          : mine.gameWon
-          ? "Good Game! Click to reset mine"
-          : "Reset Mine"}
-      </Button>
+      <Flex alignItems="center" gap="10px">
+        <Button onClick={setupMineFunc}>
+          {mine.gameOver
+            ? "Well played! Click to reset mine"
+            : mine.gameWon
+            ? "Good Game! Click to reset mine"
+            : "Reset Mine"}
+        </Button>
+        <Text as="u" onClick={gotoRules} _hover={{ cursor: "pointer" }}>
+          <a href="/rules" target="_blank">
+            Rules
+          </a>
+        </Text>
+      </Flex>
       <Flex direction="column">
-        <Box>
+        <Flex w="100%" justifyContent="center">
           You have {mine.numOfBombs - mine.numberOfFlags} flags remaining
-        </Box>
+        </Flex>
         <GameGrid />
       </Flex>
     </Flex>
