@@ -1,7 +1,12 @@
 import type { NextPage } from "next";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import GameGrid from "../components/GameGrid";
-import { flagCell, setupMine } from "../features/mine/mineSlice";
+import {
+  flagCell,
+  setupMine,
+  unFlagCell,
+  unmaskGrid,
+} from "../features/mine/mineSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useEffect, useRef } from "react";
 import { mineSelector } from "../selectors/mineSelector";
@@ -13,14 +18,22 @@ const Home: NextPage = () => {
 
   const cellOnRightClick = (row: number, col: number) => {
     if (mineRef.current.gameOver) return;
-    if (
+    if (mineRef.current.grid[row][col].isFlagged) {
+      dispatch(unFlagCell({ r: row, c: col }));
+    } else if (
       mineRef.current.grid[row][col].isMasked &&
-      mineRef.current.numberOfFlags <= mineRef.current.numOfBombs &&
+      mineRef.current.numberOfFlags < mineRef.current.numOfBombs &&
       !mineRef.current.grid[row][col].isFlagged
     ) {
       dispatch(flagCell({ r: row, c: col }));
     }
   };
+
+  useEffect(() => {
+    if (mine.gameWon) {
+      dispatch(unmaskGrid());
+    }
+  }, [mine.gameWon]);
 
   useEffect(() => {
     mineRef.current = mine;
@@ -63,7 +76,13 @@ const Home: NextPage = () => {
       <Text textStyle="p1" color="black.400">
         Hello Minesweeper!
       </Text>
-      <Button onClick={setupMineFunc}>Reset Mine</Button>
+      <Button onClick={setupMineFunc}>
+        {mine.gameOver
+          ? "Well played! Click to reset mine"
+          : mine.gameWon
+          ? "Good Game! Click to reset mine"
+          : "Reset Mine"}
+      </Button>
       <Flex direction="column">
         <Box>
           You have {mine.numOfBombs - mine.numberOfFlags} flags remaining

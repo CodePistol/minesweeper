@@ -20,6 +20,7 @@ export interface IMineState {
   gameOver: boolean;
   unmaskedArray: boolean[][];
   numberOfFlags: number;
+  gameWon: boolean;
 }
 
 export interface ISetupMine {

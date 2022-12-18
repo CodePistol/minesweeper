@@ -14,6 +14,7 @@ const initialState: IMineState = {
   gameOver: false,
   unmaskedArray: [],
   numberOfFlags: 0,
+  gameWon: false,
 };
 
 export const mineSlice = createSlice({
@@ -35,17 +36,24 @@ export const mineSlice = createSlice({
         new Array(payload.width).fill(false)
       ) as boolean[][];
     },
-    invertMask: (state, { payload }: PayloadAction<ICellCoordinates>) => {
+    unmaskCell: (state, { payload }: PayloadAction<ICellCoordinates>) => {
       const { r, c } = payload;
       if (state.grid) {
-        state.grid[r][c].isMasked = !state.grid[r][c].isMasked;
+        state.grid[r][c].isMasked = false;
       }
     },
     flagCell: (state, { payload }: PayloadAction<ICellCoordinates>) => {
       const { r, c } = payload;
       if (isPointValid(r, c, state.height, state.width)) {
-        state.grid[r][c].isFlagged = !state.grid[r][c].isFlagged;
+        state.grid[r][c].isFlagged = true;
         state.numberOfFlags++;
+      }
+    },
+    unFlagCell: (state, { payload }: PayloadAction<ICellCoordinates>) => {
+      const { r, c } = payload;
+      if (isPointValid(r, c, state.height, state.width)) {
+        state.grid[r][c].isFlagged = false;
+        state.numberOfFlags--;
       }
     },
     unmaskGrid: (state) => {
@@ -54,7 +62,12 @@ export const mineSlice = createSlice({
           state.grid[i][j].isMasked = false;
         }
       }
+    },
+    setGameOver: (state) => {
       state.gameOver = true;
+    },
+    setGameWon: (state) => {
+      state.gameWon = true;
     },
     clearMine: (state, { payload }: PayloadAction<ICellCoordinates>) => {
       const { r, c } = payload;
@@ -121,6 +134,14 @@ export const mineSlice = createSlice({
   },
 });
 
-export const { setupMine, invertMask, clearMine, flagCell, unmaskGrid } =
-  mineSlice.actions;
+export const {
+  setupMine,
+  unmaskCell,
+  clearMine,
+  flagCell,
+  unFlagCell,
+  unmaskGrid,
+  setGameWon,
+  setGameOver,
+} = mineSlice.actions;
 export default mineSlice.reducer;
